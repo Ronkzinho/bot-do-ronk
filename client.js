@@ -12,21 +12,6 @@ module.exports = class BotDoRonk extends Client{
         this.initializeEvents('./events')
         this.initializeCommands('./commands')
     }
-    initializeEvents (path) {
-        readdirSync(path).forEach(file => {
-            try {
-                let filePath = path + '/' + file
-                if (file.endsWith('.js')) {
-                    let Listener = require(filePath)
-                    this.on(file.replace(/.js/g, ''), Listener)
-                } else if (statSync(filePath).isDirectory()) {
-                    this.initializeEvents(filePath)
-                }
-            } catch (error) {
-                console.log(error)
-            }
-        })
-    }
     initializeCommands (path) {
         readdirSync(path).forEach(file => {
             try {
@@ -38,6 +23,21 @@ module.exports = class BotDoRonk extends Client{
                     this.commands.set(commandName, command)
                 } else if (statSync(filePath).isDirectory()) {
                     this.initializeCommands(filePath)
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        })
+    }
+    initializeEvents (path) {
+        readdirSync(path).forEach(file => {
+            try {
+                let filePath = path + '/' + file
+                if (file.endsWith('.js')) {
+                    let Listener = require(filePath)
+                    this.on(file.replace(/.js/g, ''), Listener)
+                } else if (statSync(filePath).isDirectory()) {
+                    this.initializeEvents(filePath)
                 }
             } catch (error) {
                 console.log(error)
